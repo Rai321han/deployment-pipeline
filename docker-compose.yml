@@ -1,0 +1,49 @@
+services:
+  database:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=raihan
+      - POSTGRES_PASSWORD=ararepassword
+      - POSTGRES_DB=mydb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backend/docker/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: ./backend
+    ports:
+      - "5200:5200"
+    env_file:
+      - .env.production
+    depends_on:
+      - database
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+    volumes:
+      - ./backend:/app
+    command: npm start
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://backend:5200
+    env_file:
+      - .env.production
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://backend:5200
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/.next
+    stdin_open: true
+    tty: true
+
+volumes:
+  pgdata:

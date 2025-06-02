@@ -1,0 +1,19 @@
+# frontend/Dockerfile.dev
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy only package files to install dependencies first (better caching)
+COPY package*.json ./
+
+RUN npm install
+
+# Copy the rest of the app
+COPY . .
+
+# Set environment variable (optional in dev; also comes from docker-compose)
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
+# Default command to start Next.js dev server
+CMD ["npm", "run", "dev"]
