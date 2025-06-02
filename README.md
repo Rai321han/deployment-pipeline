@@ -15,6 +15,7 @@ A full-stack web app with a PostgreSQL database, a Node.js backend, and a Next.j
 
 ## 📁 Folder Structure
 
+```bash
 ├── backend/ # Express backend
 │ ├── Dockerfile # Production Dockerfile
 │ ├── Dockerfile.dev # Dev Dockerfile
@@ -29,6 +30,7 @@ A full-stack web app with a PostgreSQL database, a Node.js backend, and a Next.j
 ├── docker-compose.dev.yml # For development
 ├── .env.example # Shared environment template
 └── README.md
+```
 
 ---
 
@@ -55,7 +57,7 @@ docker-compose -f docker-compose.dev.yml up --build
 ```
 
 # PORTS
+
 - Frontend: http://localhost:3000
 - Backend: http://localhost:5200
 - Database: localhost:5432
-

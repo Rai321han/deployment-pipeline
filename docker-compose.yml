@@ -2,9 +2,9 @@ services:
   database:
     image: postgres:15
     environment:
-      - POSTGRES_USER=raihan
-      - POSTGRES_PASSWORD=ararepassword
-      - POSTGRES_DB=mydb
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./backend/docker/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -23,20 +23,20 @@ services:
       - DATABASE_URL=${DATABASE_URL}
     volumes:
       - ./backend:/app
-    command: npm start
+    command: ["/wait-for-it.sh", "database:5432", "--", "npm", "start"]
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_API_URL: http://backend:5200
+        - NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
     env_file:
       - .env.production
     ports:
       - "3000:3000"
     environment:
-      NEXT_PUBLIC_API_URL: http://backend:5200
+      - NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
     depends_on:
       - backend
     volumes:
